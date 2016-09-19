@@ -1,0 +1,21 @@
+{
+  "name": "grengill-discord-bot",
+  "version": "1.0.0",
+  "description": "A discord bot.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://eldsmith@bitbucket.org/eldsmith/grengill-discord-bot.git"
+  },
+  "author": "Friðberg Reynir Traustason",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/eldsmith/grengill-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^9.2.0",
+    "dotenv": "^2.0.0",
+    "ytdl": "^0.3.14"
+  }
+}
