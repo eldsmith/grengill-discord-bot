@@ -1,35 +1,9 @@
+"use strict";
 require('dotenv').config();
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const ytdl = require('ytdl-core');
-var stream;
-var dispatcher;
-var joinedVoice;
-var voiceConnection;
+const Grengill = require('./lib/grengill');
+const grengilBot = new Grengill(process.env.BOT_TOKEN);
+require('./services/discordChat/discordChat')(grengilBot);
 
-client.on('ready', () => {
-  console.log('I am ready!');
-
+grengilBot.on('ready', ()=>{
+  console.log('GrengilBot ready');
 });
-
-client.on('message', message => {
-  if (message.content === 'ping') {
-    message.reply('pong');
-  }
-
-  if (message.content === '!j') {
-    joinedVoice = message.member.voiceChannel;
-    joinedVoice.join().then(connection => voiceConnection = connection);
-  }
-
-  if (message.content === '!p') {
-    stream = ytdl('https://www.youtube.com/watch?v=xULTMMgwLuo', {filter : 'audioonly'});
-    dispatcher = voiceConnection.playStream(stream);
-  }
-
-  if (message.content === '!s') {
-    dispatcher.pause();
-  }
-});
-
-client.login(process.env.BOT_TOKEN);
