@@ -7,3 +7,8 @@ require('./services/discordChat/discordChat')(grengilBot);
 grengilBot.on('ready', ()=>{
   console.log('GrengilBot ready');
 });
+
+process.on('uncaughtException', function (err) {
+  console.error(err.stack);
+  console.log("Node NOT Exiting...");
+});
