@@ -39,6 +39,12 @@ module.exports = (grengilBotIn)=>{
       case '!stop':
         grengilBot.stopPlayback();
         break;
+
+      case '!playlist':
+        for(let song of grengilBot.playlist.slice(0,5)){
+          message.channel.sendMessage(song.title);
+        }
+        break;
     }
   });
 };
