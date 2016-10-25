@@ -1,8 +1,7 @@
 'use strict';
 const youtube = require('./youtube.js');
 var grengilBot;
-var playing = false;
-//const client = grengilBot.client;
+
 
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
@@ -48,19 +47,6 @@ module.exports = (grengilBotIn)=>{
     }
   });
 };
-/*
-const playback = (dispatcher)=>{
-  songDispatcher = dispatcher
-  if(songDispatcher){
-    songDispatcher.on('end', ()=>{
-      playback(grengilBot.playNext());
-    });
-  }
-  else{
-    playing = false;
-  }
-};
-*/
 
 function search(q){
   let params = {
