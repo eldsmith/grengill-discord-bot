@@ -8,7 +8,7 @@ grengilBot.on('ready', ()=>{
   console.log('GrengilBot ready');
 });
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err)=>{
   console.error(err.stack);
-  console.log("Node NOT Exiting...");
+  console.log("Node not stopping.");
 });
