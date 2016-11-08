@@ -7,10 +7,17 @@ var grengilBot;
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
 
+  //FIXME: Not a good place for this.
+  //FIXME: History collection should have ttl or some sort of limit
+  //TODO: There should be a history model or something.
+  grengilBot.on('add', (song)=>{
+    db.addToCollection('history', song);
+  });
+
   grengilBot.onMessage((message)=>{
     let chatString = message.content;
     let command = chatString.split(' ')[0]; //The command at the beginning of the string
-    let extra = chatString.substring(command.length, chatString.length); //Everything after the command
+    let extra = chatString.substring(command.length, chatString.length).trim(); //Everything after the command
 
     switch(command){
       case '!join':
@@ -54,9 +61,21 @@ module.exports = (grengilBotIn)=>{
 
 };
 
-function history(params){
-  if(params){
+//FIXME: Should probably have some sort of util.js for this stuff
+function shuffle(a) {
+  for (let i = a.length; i; i--) {
+    let j = Math.floor(Math.random() * i);
+    [a[i - 1], a[j]] = [a[j], a[i - 1]];
+  }
+}
 
+//FIXME: MODEL IS NEEDED
+//FIXME: Doesn't check for dupes in playlist
+function history(params){
+  if(params=="mix"){
+    let songHistory = db.distinct(db.getCollection('history').find(), 'id');
+    shuffle(songHistory);
+    grengilBot.add(songHistory);
   }
 }
 
