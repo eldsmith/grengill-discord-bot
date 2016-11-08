@@ -1,5 +1,6 @@
 'use strict';
 const youtube = require('./youtube.js');
+const config = require(process.cwd() + '/lib/config').config(__dirname);
 var grengilBot;
 
 

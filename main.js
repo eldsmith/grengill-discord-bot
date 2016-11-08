@@ -1,10 +1,11 @@
 "use strict";
 require('dotenv').config();
+require('./lib/db/db').init(); //Initialize the database
 const Grengill = require('./lib/grengill');
 const grengilBot = new Grengill(process.env.BOT_TOKEN);
 
 /*Require every app.js within subdirectories of modules and pass bot through*/
-var normalizedPath = require("path").join(__dirname, "plugins");
+var normalizedPath = require('path').join(__dirname, 'plugins');
 
 try{
   require("fs").readdirSync(normalizedPath).forEach(function(file) {
