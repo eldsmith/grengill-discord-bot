@@ -1,8 +1,8 @@
 'use strict';
 const youtube = require('./youtube.js');
 const config = require(process.cwd() + '/lib/config').config(__dirname);
+const db = require(process.cwd() + '/lib/db/db');
 var grengilBot;
-
 
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
@@ -45,9 +45,21 @@ module.exports = (grengilBotIn)=>{
           message.channel.sendMessage(song.title);
         }
         break;
+
+      case '!history':
+        history(extra);
+        break;
     }
   });
+
 };
+
+function history(params){
+  if(params){
+
+  }
+}
+
 
 function search(q){
   let params = {

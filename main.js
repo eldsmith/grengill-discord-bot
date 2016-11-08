@@ -17,7 +17,7 @@ catch(error){
   console.error(error);
 }
 
-grengilBot.on('ready', ()=>{
+grengilBot.onReady(()=>{
   console.log('GrengilBot ready');
 });
 
