@@ -53,8 +53,16 @@ module.exports = (grengilBotIn)=>{
         }
         break;
 
+
+      //FIXME: HISTORY MODEL IS NEEDED
+      //FIXME: Doesn't check for dupes in playlist
+      //TODO: Output recent history if extra != mix
       case '!history':
-        history(extra);
+        if(extra=='mix'){
+          let songHistory = db.distinct(db.getCollection('history').find(), 'id');
+          shuffle(songHistory);
+          grengilBot.add(songHistory);
+        }
         break;
     }
   });
@@ -68,17 +76,6 @@ function shuffle(a) {
     [a[i - 1], a[j]] = [a[j], a[i - 1]];
   }
 }
-
-//FIXME: MODEL IS NEEDED
-//FIXME: Doesn't check for dupes in playlist
-function history(params){
-  if(params=="mix"){
-    let songHistory = db.distinct(db.getCollection('history').find(), 'id');
-    shuffle(songHistory);
-    grengilBot.add(songHistory);
-  }
-}
-
 
 function search(q){
   let params = {
