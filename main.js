@@ -1,9 +1,13 @@
 "use strict";
 require('dotenv').config();
 require('./lib/db/db').init(); //Initialize the database
+
+var app = require('express')();
+var http = require('http').Server(app);
 const Grengill = require('./lib/grengill');
 const grengilBot = new Grengill(process.env.BOT_TOKEN);
 
+require('./lib/socket')(http, app, grengilBot);
 /*Require every app.js within subdirectories of modules and pass bot through*/
 var normalizedPath = require('path').join(__dirname, 'plugins');
 

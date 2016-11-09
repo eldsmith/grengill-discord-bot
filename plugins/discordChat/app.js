@@ -1,9 +1,11 @@
 'use strict';
-const youtube = require('./youtube.js');
+const youtube = require(process.cwd() + '/lib/youtube');
 const config = require(process.cwd() + '/lib/config').config(__dirname);
 const db = require(process.cwd() + '/lib/db/db');
 var grengilBot;
 
+//TODO: Rethink this approach --perhaps some improvements or redesign of grengill.js
+//      what if i want to 'next' on another plugin for example? I shouldn't have to write more then grengilBot.next().
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
 
@@ -19,7 +21,10 @@ module.exports = (grengilBotIn)=>{
     let command = chatString.split(' ')[0]; //The command at the beginning of the string
     let extra = chatString.substring(command.length, chatString.length).trim(); //Everything after the command
 
+    //FIXME: Error handling
     switch(command){
+
+      //FIXME: Catch error if no channel
       case '!join':
         grengilBot.join(message.member.voiceChannel);
         message.channel.sendMessage('Joining voice channel: ' + message.member.voiceChannel.name);
@@ -77,6 +82,7 @@ function shuffle(a) {
   }
 }
 
+//FIXME: YoutubeController plzzzz
 function search(q){
   let params = {
     q: q,
