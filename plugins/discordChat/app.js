@@ -82,7 +82,7 @@ function shuffle(a) {
   }
 }
 
-//FIXME: YoutubeController plzzzz
+//FIXME: YoutubeController please
 function search(q){
   let params = {
     q: q,
