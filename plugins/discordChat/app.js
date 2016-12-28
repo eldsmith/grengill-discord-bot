@@ -59,11 +59,12 @@ module.exports = (grengilBotIn)=>{
         break;
 
 
-      //FIXME: HISTORY MODEL IS NEEDED
+      //FIXME: History model needed
       //FIXME: Doesn't check for dupes in playlist
       //TODO: Output recent history if extra != mix
+      //TODO: A model for any array of songs with handling of extra params within it
       case '!history':
-        if(extra=='mix'){
+        if(extra === 'mix'){
           let songHistory = db.distinct(db.getCollection('history').find(), 'id');
           shuffle(songHistory);
           grengilBot.add(songHistory);
