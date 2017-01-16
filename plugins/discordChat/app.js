@@ -1,11 +1,10 @@
 'use strict';
-const youtube = require(process.cwd() + '/lib/youtube');
-const config = require(process.cwd() + '/lib/config').config(__dirname);
+const Youtube = require(process.cwd() + '/controllers/youtube_controller');
+//const config = require(process.cwd() + '/lib/config').config(__dirname);
 const db = require(process.cwd() + '/lib/db/db');
 var grengilBot;
 
 //TODO: Rethink this approach --perhaps some improvements or redesign of grengill.js
-//      what if i want to 'next' on another plugin for example? I shouldn't have to write more then grengilBot.next().
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
 
@@ -35,7 +34,7 @@ module.exports = (grengilBotIn)=>{
         break;
 
       case '!add':
-        search(extra).then((result)=>{
+        Youtube.search(extra).then((result)=>{
           grengilBot.add(result);
           message.channel.sendMessage('Added: ' + result.title);
         });
@@ -81,28 +80,4 @@ function shuffle(a) {
     let j = Math.floor(Math.random() * i);
     [a[i - 1], a[j]] = [a[j], a[i - 1]];
   }
-}
-
-//FIXME: YoutubeController please
-function search(q){
-  let params = {
-    q: q,
-    type: 'video',
-    maxResults: 1,
-    part: 'snippet'
-  };
-
-
-  return youtube.getSearch(params)
-  .then((results) => {
-    return new Promise((resolve, reject)=>{
-      //return only the id and title of the first (and only) result
-      let result = {
-        id: results.items[0].id.videoId,
-        title: results.items[0].snippet.title
-      };
-
-      resolve(result);
-    });
-  });
 }
