@@ -1,10 +1,13 @@
 const youtube = require('../lib/youtube');
 
-module.exports.search = (q) => {
+/* {
+ extendedInfo: provides additional info that requires a second ajax request
+}*/
+module.exports.search = (q, options = {maxResults: 1, extendedInfo: false}) => {
   let params = {
     q: q,
     type: 'video',
-    maxResults: 1,
+    maxResults: options.maxResults,
     part: 'snippet'
   };
 
@@ -12,13 +15,19 @@ module.exports.search = (q) => {
   return youtube.getSearch(params)
   .then((results) => {
     return new Promise((resolve, reject)=>{
-      //return only the id and title of the first (and only) result
-      let result = {
-        id: results.items[0].id.videoId,
-        title: results.items[0].snippet.title
-      };
+      let songs = [];
 
-      resolve(result);
+      results.items.map((song)=>{
+        songs.push({
+          id: song.id.videoId,
+          title: song.snippet.title
+        });
+      });
+
+      if(options.maxResults === 1){
+        resolve(songs[0]);
+      }
+      resolve(songs);
     });
   });
-}
+};
