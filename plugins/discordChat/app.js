@@ -2,15 +2,18 @@
 const Youtube = require(process.cwd() + '/controllers/youtube_controller');
 //const config = require(process.cwd() + '/lib/config').config(__dirname);
 const db = require(process.cwd() + '/lib/db/db');
+const HistorySongList = require(process.cwd() + '/models/history_song_list');
+const songListCommands = require('./song_list_commands');
+
+var historyList = new HistorySongList();
 var grengilBot;
 
 //TODO: Rethink this approach --perhaps some improvements or redesign of grengill.js
 module.exports = (grengilBotIn)=>{
   grengilBot = grengilBotIn;
 
-  //FIXME: Not a good place for this.
+  //FIXME: Not a great place for this.
   //FIXME: History collection should have ttl or some sort of limit
-  //TODO: There should be a history model or something.
   grengilBot.on('add', (song)=>{
     db.addToCollection('history', song);
   });
@@ -57,17 +60,9 @@ module.exports = (grengilBotIn)=>{
         }
         break;
 
-
-      //FIXME: History model needed
       //FIXME: Doesn't check for dupes in playlist
-      //TODO: Output recent history if extra != mix
-      //TODO: A model for any array of songs with handling of extra params within it
       case '!history':
-        if(extra === 'mix'){
-          let songHistory = db.distinct(db.getCollection('history').find(), 'id');
-          shuffle(songHistory);
-          grengilBot.add(songHistory);
-        }
+        songListCommands(historyList, extra, grengilBot);
         break;
     }
   });
