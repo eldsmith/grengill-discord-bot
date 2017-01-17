@@ -3,58 +3,36 @@ const youtube = require('../lib/youtube');
 /* {
  extendedInfo: provides additional info that requires a second ajax request
 }*/
-module.exports.search = (q, {maxResults = 1, extendedInfo = false} = {}) => {
-  let params = {
-    q: q,
-    type: 'video',
-    maxResults: maxResults,
-    part: 'snippet'
-  };
-
+exports.search = (q, {maxResults = 1, pageToken = false, type = 'video', part = 'snippet'} = {}) => {
+  let params = {q, type, maxResults, part};
+  if(pageToken){
+    params.pageToken = pageToken;
+  }
 
   return youtube.getSearch(params)
   .then((results) => {
     return new Promise((resolve, reject)=>{
       let songs = [];
-      let videoIds = [];
 
       results.items.map((song)=>{
-        songs.push({
-          id: song.id.videoId,
-          title: song.snippet.title
-        });
-
-        videoIds.push(song.id.videoId);
+        songs.push(convertToGrengilSong(song));
       });
 
-      if(extendedInfo){
-        youtube.getVideoInfo(videoIds, {maxResults}).then((secondResults) =>{
-          songs = songs.map((song)=>{
-
-            secondResults.items.map((info)=>{
-              if(song.id === info.id){
-                song.contentDetails = info.contentDetails;
-              }
-            });
-
-            return song;
-          });
-
-          if(maxResults === 1){
-            resolve(songs[0]);
-          }
-          resolve(songs);
-
-        });
+      if(maxResults === 1){
+        resolve(songs[0]);
       }
-
-      else{
-        if(maxResults === 1){
-          resolve(songs[0]);
-        }
-        resolve(songs);
-      }
+      resolve(songs);
 
     });
   });
 };
+
+exports.convertToGrengilSong = convertToGrengilSong;
+
+// A standard way to convert to a song object used by grengil
+function convertToGrengilSong(song){
+  return {
+    id: song.id.videoId,
+    title: song.snippet.title
+  };
+}
