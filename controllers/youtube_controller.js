@@ -33,6 +33,8 @@ exports.convertToGrengilSong = convertToGrengilSong;
 function convertToGrengilSong(song){
   return {
     id: song.id.videoId,
-    title: song.snippet.title
+    title: song.snippet.title,
+    description: song.snippet.description,
+    thumbnails: song.snippet.thumbnails
   };
 }

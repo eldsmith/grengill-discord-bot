@@ -15,6 +15,8 @@ module.exports = (grengilBotIn)=>{
   //FIXME: Not a great place for this.
   //FIXME: History collection should have ttl or some sort of limit
   grengilBot.on('add', (song)=>{
+    song.timeAdded = Date();
+    console.log(song);
     db.addToCollection('history', song);
   });
 
