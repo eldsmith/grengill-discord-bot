@@ -1,6 +1,7 @@
 const SongList = require('./song_list');
 const db = require('../lib/db/db');
 
+//TODO: fetch every time grengilbot songs are updated
 class HistorySongList extends SongList {
   constructor(songs = []){
     super(songs);
@@ -11,7 +12,7 @@ class HistorySongList extends SongList {
   //fetch songs from history
   fetch(){
     db.getCollection('history', (data)=>{
-      this.songs = data.find();
+      this.songs = data.chain().find().simplesort('dateAdded', true).data();
     });
   }
 
