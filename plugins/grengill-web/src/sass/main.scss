@@ -1,0 +1,76 @@
+@import "bulma";
+$pop-mustard : rgb(255, 176, 0);
+$deep-red: rgb(125, 0, 0);
+$dark-font-color: rgb(40, 39, 39);
+
+html{
+  background-color: $deep-red;
+}
+
+body{
+  margin-bottom: 3em;
+  color: $dark-font-color;
+}
+
+.flex-vcenter{
+  align-items: center;
+}
+
+.rounded{
+  border-radius: 5px;
+}
+
+.soft-shadow{
+  box-shadow: 0px 0px 20px 2px #b0b4ba;
+}
+
+.grengil-title{
+  padding-bottom: 5em;
+}
+
+.result-container{
+  margin-top: 4%;
+}
+
+.youtube-result{
+  background-color: rgb(255, 255, 255);
+  //border: 1px grey solid;
+  box-shadow: 0px 0px 10px 2px #1b1c1d;
+  @media screen and (min-width: $tablet) {
+    margin: 0;
+    margin-top: 2em;
+    max-width: 70%;
+    margin-left: 15%;
+  }
+
+  h1{
+    //color: rgb(255, 255, 255);
+    font-size: 20px;
+  }
+
+  h2{
+    //color: rgb(255, 255, 255);
+    font-size: 16px;
+  }
+
+}
+
+.page-btn{
+  background-color: $pop-mustard;
+  border-color: lighten($pop-mustard, 10);
+  color: $dark-font-color;
+  width: 6em;
+}
+
+.test{
+  width: 85%;
+}
+
+.mobile-pad{
+  @media screen and (min-width: $tablet - 280) and (max-width: $tablet - 100) {
+    margin: 0 10%;
+  }
+  @media screen and (min-width: $tablet - 100) and (max-width: $tablet) {
+    margin: 0 20%;
+  }
+}

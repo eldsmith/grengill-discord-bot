@@ -1,0 +1,58 @@
+extends layouts/master.pug
+
+block content
+  section.section.grengil-title
+    div.columns
+      div.column.has-text-centered.is-half.is-offset-one-quarter
+        h1.title GrengilBot
+        h2.subtitle A simple Discord music bot, powered by <strong>friendship</strong>
+        p.control.has-icon.has-icon-right
+          form(action="/search" method="get")
+            input.input(type="text" name="search" placeholder="Search YouTube")
+
+
+  div.container.result-container
+    if items
+      each video in items
+        - var snippet = video.snippet
+
+          div.box.youtube-result
+            div.columns.flex-vcenter
+              div.column.is-2
+                figure.image.is-1by2
+                  img.rounded.soft-shadow(src=snippet.thumbnails.medium.url alt="Image")
+              div.column.is-9
+                h1.title=snippet.title
+                h2.subtitle=snippet.duration
+              div.column.is-1
+                i.fa.fa-plus.fa-2x.addSongBtn(youtubeId=video.id.videoId)
+
+      nav.level.test
+        div.level-left
+        div.level-right
+          form(action="/search" method="get")
+            input(name="search" type="hidden" value=prevSearch)
+            if prevPageToken
+              button.level-item.button.page-btn.is-medium(name="pageToken" type="submit" value=prevPageToken)
+                i.fa.fa-arrow-left
+            if nextPageToken
+              button.level-item.button.page-btn.is-medium(name="pageToken" type="submit" value=nextPageToken)
+                i.fa.fa-arrow-right
+
+block scripts
+  script.
+    var socket = io('#{env.GRENGILL_SOCKET}');
+    $('.addSongBtn').click(function(){
+      let songBtn = $(this);
+      if(!songBtn.attr('added'))
+      {
+        songBtn.addClass('button is-loading is-link'); //while loading show loading icon
+        socket.emit('songAdd', songBtn.attr('youtubeId'), ()=>{
+          //FIXME: should have success and error params
+          //After assuming that a song is successfully added
+          songBtn.removeClass('button is-loading is-link fa-plus');
+          songBtn.addClass('fa-check');
+          songBtn.attr('added', true);
+        });
+      }
+    });
