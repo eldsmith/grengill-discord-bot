@@ -28,3 +28,4 @@ This plugin handles some basic chat functionality
 # Instructions
 * Run `npm install`
 * Make sure that all .env variables are in place, use .env.example as template
+* Make sure to create your discord bot and add it to your server, a possible template for this is https://discordapp.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot&permissions=3214336
