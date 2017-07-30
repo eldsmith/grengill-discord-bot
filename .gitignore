@@ -2,3 +2,5 @@
 .env
 /lib/db/db.json
 /plugins/*/config.json
+
+npm-debug\.log
