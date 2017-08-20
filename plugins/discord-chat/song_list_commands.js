@@ -12,13 +12,13 @@ module.exports = (songList, commandInput, grengilBot, message) => {
 		commands = commandInput;
 	}
 
-	console.log(commands);
 	if (!commands) return;
 
 	let songs = [ ...songList.songs];
 	let addSongsFlag = false;
 	let newSongsFlag = false;
 
+	console.log(songs);
 	commands.map(command => {
 		switch (command) {
 			case 'shuffle':
@@ -46,11 +46,10 @@ module.exports = (songList, commandInput, grengilBot, message) => {
 		}
 
 		if (addSongsFlag) {
-			console.log('add');
 			grengilBot.add(songs);
 		} if (newSongsFlag) {
-			console.log('new');
-			grengilBot.playlist = new SongList(songs);
+			grengilBot.clearPlaylist();
+			grengilBot.add(songs);
 		}
 	});
 };

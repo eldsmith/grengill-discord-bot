@@ -20,11 +20,3 @@ module.exports = grengilBotIn => {
 	grengilBot.onMessage(commandController(grengilBot));
 
 };
-
-//FIXME: Should probably have some sort of util.js for this stuff
-function shuffle(a) {
-	for (let i = a.length; i; i--) {
-		let j = Math.floor(Math.random() * i);
-		[a[i - 1], a[j]] = [a[j], a[i - 1]];
-	}
-}
