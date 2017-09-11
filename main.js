@@ -20,8 +20,8 @@ http.listen(process.env.PORT || 5000, () => {
   console.log("server is running"); //Listen on the port and log success
 });
 
-/*FIXME:This should only catch ERRCONNECT, for now catches everything*/
+/* For crazy people
 process.on("uncaughtException", err => {
   console.error(err.stack);
   console.log("Node not stopping.");
-});
+}); */

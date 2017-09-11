@@ -12,12 +12,18 @@ module.exports = grengilBot => {
 
     //FIXME: Error handling
     switch (command) {
-      //FIXME: Catch error if no channel
+      //Joins the voice channel of the person asking
       case "!join":
-        grengilBot.join(message.member.voiceChannel);
-        message.channel.sendMessage(
-          "Joining voice channel: " + message.member.voiceChannel.name
-        );
+        if (message.member.voiceChannel) {
+          grengilBot.join(message.member.voiceChannel);
+          message.channel.sendMessage(
+            "Joining voice channel: " + message.member.voiceChannel.name
+          );
+        } else {
+          message.channel.sendMessage(
+            "Hey, you need to first join a voice channel before you ask me to join...idiot."
+          );
+        }
         break;
 
       case "!play":
