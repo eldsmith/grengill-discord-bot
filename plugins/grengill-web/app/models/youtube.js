@@ -1,38 +1,34 @@
-const YouTube = require('youtube-api');
+const YouTube = require("youtube-api");
 
 YouTube.authenticate({
-  type: 'key',
+  type: "key",
   key: process.env.YOUTUBE_API_KEY
 });
 
-exports.getSearch = (params)=>{
-  return new Promise((resolve, reject)=>{
-    YouTube.search.list(params, (error, result)=>{
+exports.getSearch = params => {
+  return new Promise((resolve, reject) => {
+    YouTube.search.list(params, (error, result) => {
       if (error) {
         reject(error);
-      }
-      else {
+      } else {
         resolve(result);
       }
     });
   });
 };
 
-
-exports.getVideoInfo = (videoIds)=>{
-  return new Promise((resolve, reject)=>{
-
+exports.getVideoInfo = videoIds => {
+  return new Promise((resolve, reject) => {
     var params = {
       id: videoIds.toString(),
       maxResults: 10,
-      part: 'contentDetails'
+      part: "contentDetails"
     };
 
-    YouTube.videos.list(params, (error, result)=>{
+    YouTube.videos.list(params, (error, result) => {
       if (error) {
         reject(error);
-      }
-      else {
+      } else {
         resolve(result);
       }
     });
