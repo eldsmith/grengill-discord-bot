@@ -49,7 +49,12 @@ module.exports = grengilBot => {
         break;
 
       case "!playlist":
-        songListCommands(grengilBot.playlist, extra, grengilBot, message);
+        songListCommands(
+          grengilBot.playlist,
+          ["log", ...extra],
+          grengilBot,
+          message
+        );
         break;
 
       //FIXME: Doesn't check for dupes in playlist

@@ -2,10 +2,13 @@
 
 const SongList = require("../../models/song_list");
 
+const PastebinAPI = require("pastebin-js");
+const pastebin = new PastebinAPI(process.env.PASTEBIN_API_KEY);
+
 module.exports = (songList, commandInput, grengilBot, message) => {
   let commands;
 
-  console.log(typeof commandInput);
+  // commands should be an array of strings
   if (typeof commandInput === "string") {
     commands = commandInput.split(" ");
   } else {
@@ -31,9 +34,24 @@ module.exports = (songList, commandInput, grengilBot, message) => {
         break;
       case "log":
       case "l":
-        for (let song of songs.slice(0, 5)) {
-          message.channel.sendMessage(song.title);
+        //TODO: Add a logger function that can be replaced easy
+        let logOutput = "";
+        for (let song of songs) {
+          logOutput += song.title + "\n";
         }
+        pastebin
+          .createPaste({
+            text: logOutput,
+            title: "GrengilBot Playlist",
+            format: null,
+            expiration: "10M"
+          })
+          .then(function(data) {
+            message.channel.sendMessage(data);
+          })
+          .fail(function(err) {
+            console.log(err);
+          });
         break;
       case "add":
       case "a":
