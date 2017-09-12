@@ -1,9 +1,7 @@
 "use strict";
 
 const SongList = require("../../models/song_list");
-
-const PastebinAPI = require("pastebin-js");
-const pastebin = new PastebinAPI(process.env.PASTEBIN_API_KEY);
+const logger = require("../../lib/pastebin.js").songLogger; //TODO: Should be defined by conf file
 
 module.exports = (songList, commandInput, grengilBot, message) => {
   let commands;
@@ -34,23 +32,17 @@ module.exports = (songList, commandInput, grengilBot, message) => {
         break;
       case "log":
       case "l":
-        //TODO: Add a logger function that can be replaced easy
-        let logOutput = "";
-        for (let song of songs) {
-          logOutput += song.title + "\n";
-        }
-        pastebin
-          .createPaste({
-            text: logOutput,
-            title: "GrengilBot Playlist",
-            format: null,
-            expiration: "10M"
+        logger(songs)
+          .then(data => {
+            message.channel.sendMessage(
+              "Somebody asked me for this shit: " + data
+            );
           })
-          .then(function(data) {
-            message.channel.sendMessage(data);
-          })
-          .fail(function(err) {
+          .fail(err => {
             console.log(err);
+            message.channel.sendMessage(
+              "Oh shit, I messed up, go away I ain't got time for this shit"
+            );
           });
         break;
       case "add":
