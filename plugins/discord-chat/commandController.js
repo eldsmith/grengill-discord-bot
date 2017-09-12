@@ -49,26 +49,34 @@ module.exports = grengilBot => {
         break;
 
       case "!playlist":
-        songListCommands(
-          grengilBot.playlist,
-          ["log", ...extra],
+        songListCommands({
+          songList: grengilBot.playlist,
+          commands: ["log", ...extra],
           grengilBot,
-          message
-        );
+          message,
+          id: "playlist"
+        });
         break;
 
       //FIXME: Doesn't check for dupes in playlist
       case "!history":
-        songListCommands(historyList, extra, grengilBot, message);
+        songListCommands({
+          songList: historyList,
+          commands: extra,
+          grengilBot,
+          message,
+          id: "history"
+        });
         break;
 
       case "!shuffle":
-        songListCommands(
-          grengilBot.playlist,
-          ["shuffle", "new", ...extra],
+        songListCommands({
+          songList: grengilBot.playlist,
+          commands: ["shuffle", "new", ...extra],
           grengilBot,
-          message
-        );
+          message,
+          id: "playlist"
+        });
         break;
     }
   };

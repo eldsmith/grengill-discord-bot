@@ -3,24 +3,24 @@
 const SongList = require("../../models/song_list");
 const logger = require("../../lib/pastebin.js").songLogger; //TODO: Should be defined by conf file
 
-module.exports = (songList, commandInput, grengilBot, message) => {
-  let commands;
+module.exports = ({ songList, commands, grengilBot, message, id }) => {
+  let commandsList;
 
-  // commands should be an array of strings
-  if (typeof commandInput === "string") {
-    commands = commandInput.split(" ");
+  // commandsList should be an array of strings
+  if (typeof commands === "string") {
+    commandsList = commands.split(" ");
   } else {
-    commands = commandInput;
+    commandsList = commands;
   }
 
-  if (!commands) return;
+  if (!commandsList) return;
 
   let songs = [...songList.songs];
   let addSongsFlag = false;
   let newSongsFlag = false;
 
   console.log(songs);
-  commands.map(command => {
+  commandsList.map(command => {
     switch (command) {
       case "shuffle":
       case "s":
@@ -32,7 +32,7 @@ module.exports = (songList, commandInput, grengilBot, message) => {
         break;
       case "log":
       case "l":
-        logger(songs)
+        logger(songs, id)
           .then(data => {
             message.channel.sendMessage(
               "Somebody asked me for this shit: " + data
