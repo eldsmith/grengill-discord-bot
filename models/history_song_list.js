@@ -19,19 +19,6 @@ class HistorySongList extends SongList {
         .data();
     });
   }
-
-  distinct(songs = this.songs) {
-    let found = [],
-      ret = [];
-    for (let i = 0; i < songs.length; i++) {
-      if (found.indexOf(songs[i].id) === -1) {
-        found.push(songs[i].id);
-        ret.push(songs[i]);
-      }
-    }
-
-    return ret;
-  }
 }
 
 module.exports = HistorySongList;
