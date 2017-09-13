@@ -17,8 +17,6 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
 
   let songs = [...songList.songs];
   let flags = {};
-  let addSongsFlag = false;
-  let newSongsFlag = false;
 
   console.log(songs);
   commandsList.map(command => {
