@@ -2,7 +2,7 @@
 
 //const config = require(process.cwd() + '/lib/config').config(__dirname);
 const db = require(process.cwd() + "/lib/db/db");
-const commandController = require("./commandController");
+const commandController = require("./command_controller");
 
 let grengilBot;
 

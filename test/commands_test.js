@@ -23,18 +23,12 @@ grengilBot.onReady(() => {
 });
 
 //require('../plugins/discord-chat/app')(grengilBot); //set everything up
-const commandController = require("../plugins/discord-chat/commandController")(
+const commandController = require("../plugins/discord-chat/command_controller")(
   grengilBot
 );
 
-describe("Array", function() {
-  describe("#indexOf()", function() {
-    it("should return -1 when the value is not present", function(done) {
-      assert.equal(-1, [1, 2, 3].indexOf(4));
-      grengilBot.onReady(() => {
-        console.log("YEAH!");
-        done();
-      });
-    });
+describe("Command controller test", function() {
+  describe("history", function() {
+    it("should return -1 when the value is not present", function(done) {});
   });
 });

@@ -4,6 +4,7 @@ const Youtube = require(process.cwd() + "/controllers/youtube_controller");
 const HistorySongList = require(process.cwd() + "/models/history_song_list");
 const historyList = new HistorySongList();
 
+//FIXME: no proper returns, bad for testing
 module.exports = grengilBot => {
   return message => {
     let chatString = message.content;
@@ -70,6 +71,11 @@ module.exports = grengilBot => {
         break;
 
       case "!shuffle":
+        grengilBot.shuffle();
+        message.channel.sendMessage("Shuffle it up, bay-beh!");
+        break;
+
+      case "!oldshuffle":
         songListCommands({
           songList: grengilBot.playlist,
           commands: ["shuffle", "new", ...extra],
