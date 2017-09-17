@@ -3,6 +3,23 @@ const sortBy = require("lodash").sortBy;
 class SongList {
   constructor(songs = []) {
     this.songs = songs;
+    this.shuffle = false; // Weather the playlist is in shuffle mode
+    this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
+  }
+  /**
+   * Adds a song to the playlist, with a random seed
+   * @param  {Object} song
+   */
+  add(song) {
+    let baseSeed = 0;
+
+    /*by using currently playing song we ensure
+		this song is after it in shufflemode*/
+    if (this.songPlaying && this.shuffleMode) {
+      baseSeed = this.songPlaying.shuffleSeed;
+    }
+    song.shuffleSeed = Math.random(baseSeed, 10);
+    this.songs.push(song);
   }
 
   /**
@@ -19,6 +36,7 @@ class SongList {
 
     return mixedList;
   }
+
   /**
    * returns a static shuffled version of the list, does not reshuffle the list like mix
    * @returns {SongList[]}
@@ -27,6 +45,10 @@ class SongList {
     return sortBy(songs, ["shuffleSeed"]);
   }
 
+  /**
+   * returns a distinct version of the playlist
+   * @param  {Object} songs=this.songs
+   */
   distinct(songs = this.songs) {
     let found = [],
       ret = [];
