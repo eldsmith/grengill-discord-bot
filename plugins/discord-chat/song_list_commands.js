@@ -44,7 +44,6 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
     }
   });
 
-  console.log(songs);
   if (flags.add) {
     grengilBot.add(songs);
   }

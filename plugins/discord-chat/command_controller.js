@@ -72,7 +72,24 @@ module.exports = grengilBot => {
 
       case "!shuffle":
         grengilBot.shuffle();
-        message.channel.sendMessage("Shuffle it up, bay-beh!");
+        if (grengilBot.shuffleMode) {
+          message.channel.sendMessage("Shuffle it up, bay-beh!");
+        } else {
+          message.channel.sendMessage("Shutting the shuffle down");
+        }
+        break;
+
+      case "!repeat":
+        grengilBot.repeat();
+        if (grengilBot.repeatMode) {
+          message.channel.sendMessage(
+            "Let's listen to this shit over and over because we hate ourselves."
+          );
+        } else {
+          message.channel.sendMessage(
+            "Yes, We are free from the eternal loop of music!"
+          );
+        }
         break;
 
       case "!oldshuffle":
