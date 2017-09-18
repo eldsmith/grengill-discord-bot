@@ -45,6 +45,15 @@ module.exports = grengilBot => {
         }
         break;
 
+      case "!prev":
+        if (grengilBot.playing) {
+          grengilBot.playNext(-1);
+          message.channel.sendMessage(
+            "I want you to listen to that horrible song again. Here you go."
+          );
+        }
+        break;
+
       case "!stop":
         grengilBot.stopPlayback();
         break;

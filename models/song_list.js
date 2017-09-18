@@ -22,6 +22,11 @@ class SongList {
     this.songs.push(song);
   }
 
+  endCurrentSong(next = false) {
+    this.songPlaying.autoNext = next; //Determines wether the song automatically goes to the next song on end
+    this.songPlaying.dispatcher.end();
+  }
+
   /**
    * returns a new shuffled list of songs
    * @param  {Object} songs=this.songs
