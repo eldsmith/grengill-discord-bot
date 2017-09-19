@@ -23,7 +23,7 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
     switch (command) {
       case "shuffle":
       case "s":
-        songs = songList.shuffled();
+        songs = songList.shuffled().songs;
         break;
       case "unique":
       case "u":

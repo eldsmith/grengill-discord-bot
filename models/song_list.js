@@ -1,10 +1,12 @@
 const sortBy = require("lodash").sortBy;
 
 class SongList {
-  constructor(songs = []) {
-    this.songs = songs;
-    this.shuffle = false; // Weather the playlist is in shuffle mode
+  constructor({ songs = [], currentTrack = 1 } = {}) {
+    this.songs = songs.map(song => {
+      return this.add(song);
+    });
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
+    this.currentTrack = currentTrack;
   }
   /**
    * Adds a song to the playlist, with a random seed
@@ -13,13 +15,46 @@ class SongList {
   add(song) {
     let baseSeed = 0;
 
-    /*by using currently playing song we ensure
+    /* FIXME: does not work currently
+    by using currently playing song we ensure
 		this song is after it in shufflemode*/
     if (this.songPlaying && this.shuffleMode) {
       baseSeed = this.songPlaying.shuffleSeed;
     }
     song.shuffleSeed = Math.random(baseSeed, 10);
     this.songs.push(song);
+  }
+
+  get({ sort = false, songs = this.songs } = {}) {
+    if (sort) {
+      return sort({ songs });
+    }
+    return songs;
+  }
+
+  getNextTrack(
+    {
+      songs = this.songs,
+      skip = 1,
+      newCurrentTrack = true,
+      sort = false,
+      shuffle = false
+    } = {}
+  ) {
+    let track = this.currentTrack + skip;
+
+    if (shuffle) {
+      sort = this._shuffleSort;
+    }
+
+    songs = this.get({ sort, songs });
+    //If we are at the end of the playlist
+    if (track > songs.length || track < 1) {
+      return false; // can't give you this track because it's out of bounds.
+    }
+
+    this.currentTrack = newCurrentTrack ? track : this.currentTrack;
+    return songs[track - 1];
   }
 
   endCurrentSong(next = false) {
@@ -32,7 +67,7 @@ class SongList {
    * @param  {Object} songs=this.songs
    * @returns {SongList[]}
    */
-  mix(songs = this.songs) {
+  mix({ songs = this.songs } = {}) {
     let mixedList = [...songs];
     for (let i = mixedList.length; i >= 1; i--) {
       let rand = Math.floor(Math.random() * i);
@@ -43,18 +78,19 @@ class SongList {
   }
 
   /**
+   * FIXME: Legacy code
    * returns a static shuffled version of the list, does not reshuffle the list like mix
    * @returns {SongList[]}
    */
-  shuffled(songs = this.songs) {
-    return sortBy(songs, ["shuffleSeed"]);
+  shuffle({ songs = this.songs } = {}) {
+    return this._shuffleSort(songs);
   }
 
   /**
    * returns a distinct version of the playlist
    * @param  {Object} songs=this.songs
    */
-  distinct(songs = this.songs) {
+  distinct({ songs = this.songs } = {}) {
     let found = [],
       ret = [];
     for (let i = 0; i < songs.length; i++) {
@@ -65,6 +101,10 @@ class SongList {
     }
 
     return ret;
+  }
+
+  _shuffleSort({ songs = this.songs } = {}) {
+    return sortBy(songs, ["shuffleSeed"]);
   }
 }
 
