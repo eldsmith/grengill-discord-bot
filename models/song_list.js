@@ -3,11 +3,13 @@ const err = require("../lib/errors");
 
 class SongList {
   constructor({ songs = [], currentTrack = 1 } = {}) {
-    this.songs = songs.map(song => {
-      return this.add(song);
-    });
+    this.songs = [];
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
+
+    songs.map(song => {
+      this.add(song);
+    });
   }
   /**
    * Adds a song to the playlist, with a random seed
