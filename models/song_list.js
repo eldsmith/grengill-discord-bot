@@ -1,4 +1,5 @@
 const sortBy = require("lodash").sortBy;
+const err = require("../lib/errors");
 
 class SongList {
   constructor({ songs = [], currentTrack = 1 } = {}) {
@@ -41,20 +42,34 @@ class SongList {
       shuffle = false
     } = {}
   ) {
-    let track = this.currentTrack + skip;
+    if (songs.length === 0) {
+      throw { name: err.PLAYLIST_EMPTY };
+    }
+
+    let trackIndex = this.currentTrack + skip;
+    let track = { looped: false, song: undefined };
+
+    // Assume that negative value means the user does not want to cycle to the other end
+    // NOTE: Perhaps add that as an option
+    if (trackIndex < 1) {
+      trackIndex = 1;
+    }
+
+    //This indicates that we have jumped over the end of the playlist
+    if (trackIndex > songs.length) {
+      trackIndex = (this.currentTrack + skip) % songs.length;
+      track.looped = true;
+    }
 
     if (shuffle) {
       sort = this._shuffleSort;
     }
 
     songs = this.get({ sort, songs });
-    //If we are at the end of the playlist
-    if (track > songs.length || track < 1) {
-      return false; // can't give you this track because it's out of bounds.
-    }
 
-    this.currentTrack = newCurrentTrack ? track : this.currentTrack;
-    return songs[track - 1];
+    this.currentTrack = newCurrentTrack ? trackIndex : this.currentTrack;
+    track.song = songs[trackIndex - 1];
+    return track;
   }
 
   endCurrentSong(next = false) {
