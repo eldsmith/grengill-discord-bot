@@ -45,7 +45,7 @@ class SongList {
     } = {}
   ) {
     if (songs.length === 0) {
-      throw { name: err.PLAYLIST_EMPTY };
+      throw { error: err.PLAYLIST_EMPTY };
     }
 
     let trackIndex = this.currentTrack + skip;
@@ -100,7 +100,7 @@ class SongList {
    * @returns {SongList[]}
    */
   shuffle({ songs = this.songs } = {}) {
-    return this._shuffleSort(songs);
+    return this.get({ sort: this._shuffleSort, songs });
   }
 
   /**
