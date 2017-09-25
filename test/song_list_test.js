@@ -39,6 +39,12 @@ describe("SongList test", function() {
       let track = testList.getNextTrack({ skip: 6 });
       assert(track.looped === true);
     });
+    it("gets the next track in a shuffle", () => {
+      let track = testList.getNextTrack({ sort: "shuffle" }).song.name;
+      let randTrack = testList.shuffle()[testList.currentTrack - 1].name;
+
+      assert(track == randTrack);
+    });
     it("returns an error when nexting an empty playlist", () => {
       let emptyList = new SongList({ songs: [] });
 
@@ -78,6 +84,35 @@ describe("SongList test", function() {
     it("adds another song to the end", function() {
       testList.add({ name: "2" });
       assert(testList.get()[1].name === "2");
+    });
+  });
+
+  describe("Getting & sorting", function() {
+    before(function() {
+      testList = new SongList({
+        songs: [{ name: "adam" }, { name: "zebra" }, { name: "bard" }]
+      });
+    });
+
+    it("sorts by alphabetical", function() {
+      let sort = list => {
+        return list.sort((a, b) => {
+          return a.name > b.name;
+        });
+      };
+
+      let songList = testList.get({ sort });
+      let prevSong;
+      let worked = true;
+
+      songList.map(song => {
+        if (prevSong && song.name < prevSong.name) {
+          worked = false;
+        }
+        prevSong = song;
+      });
+
+      assert(worked);
     });
   });
 });
