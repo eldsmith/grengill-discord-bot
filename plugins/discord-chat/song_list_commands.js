@@ -18,12 +18,11 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
   let songs = [...songList.songs];
   let flags = {};
 
-  console.log(songs);
   commandsList.map(command => {
     switch (command) {
       case "shuffle":
       case "s":
-        songs = songList.shuffled().songs;
+        flags.shuffle = true;
         break;
       case "unique":
       case "u":
@@ -44,6 +43,9 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
     }
   });
 
+  if (flags.shuffle) {
+    songs = songList.shuffle({ songs });
+  }
   if (flags.add) {
     grengilBot.add(songs);
   }

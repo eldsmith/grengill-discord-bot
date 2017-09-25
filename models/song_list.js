@@ -1,4 +1,4 @@
-const sortBy = require("lodash").sortBy;
+const { sortBy, isString, isFunction, get } = require("lodash");
 const err = require("../lib/errors");
 
 class SongList {
@@ -6,11 +6,17 @@ class SongList {
     this.songs = [];
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
+    this.defaultSorts = {
+      shuffle: songs => {
+        return sortBy(songs, ["shuffleSeed"]);
+      }
+    };
 
     songs.map(song => {
       this.add(song);
     });
   }
+
   /**
    * Adds a song to the playlist, with a random seed
    * @param  {Object} song
@@ -28,21 +34,35 @@ class SongList {
     this.songs.push(song);
   }
 
+  /**
+   * Gets the playlist
+   * @param  {function || string} {sort=false
+   * @param  {Object[]} songs=this.songs}={}
+   * @returns {Object[]} songs
+   */
   get({ sort = false, songs = this.songs } = {}) {
-    if (sort) {
-      return sort({ songs });
+    if (isString(sort)) {
+      let sortFun = get(this.defaultSorts, sort);
+      if (sortFun) {
+        return sortFun(songs);
+      }
+    } else if (isFunction(sort)) {
+      return sort(songs);
     }
     return songs;
   }
 
+  /**
+   * Gets the next track from the playlist based on params passed in
+   * @param  {Object[]} {songs=this.songs
+   * @param  {Int} skip=1
+   * @param  {Boolean} newCurrentTrack=true
+   * @param  {function} sort=false
+   * @param  {Boolean} shuffle=false}={}
+   * @returns {Object} track
+   */
   getNextTrack(
-    {
-      songs = this.songs,
-      skip = 1,
-      newCurrentTrack = true,
-      sort = false,
-      shuffle = false
-    } = {}
+    { songs = this.songs, skip = 1, newCurrentTrack = true, sort = false } = {}
   ) {
     if (songs.length === 0) {
       throw { error: err.PLAYLIST_EMPTY };
@@ -63,17 +83,16 @@ class SongList {
       track.looped = true;
     }
 
-    if (shuffle) {
-      sort = this._shuffleSort;
-    }
-
     songs = this.get({ sort, songs });
 
     this.currentTrack = newCurrentTrack ? trackIndex : this.currentTrack;
     track.song = songs[trackIndex - 1];
     return track;
   }
-
+  /**
+   * Ends the song currently playing.
+   * @param  {Boolean} next=false
+   */
   endCurrentSong(next = false) {
     this.songPlaying.autoNext = next; //Determines wether the song automatically goes to the next song on end
     this.songPlaying.dispatcher.end();
@@ -100,7 +119,7 @@ class SongList {
    * @returns {SongList[]}
    */
   shuffle({ songs = this.songs } = {}) {
-    return this.get({ sort: this._shuffleSort, songs });
+    return this.get({ sort: "shuffle", songs });
   }
 
   /**
@@ -118,10 +137,6 @@ class SongList {
     }
 
     return ret;
-  }
-
-  _shuffleSort({ songs = this.songs } = {}) {
-    return sortBy(songs, ["shuffleSeed"]);
   }
 }
 
