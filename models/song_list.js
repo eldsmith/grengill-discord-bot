@@ -1,16 +1,17 @@
 const { sortBy, isString, isFunction, get } = require("lodash");
 const err = require("../lib/errors");
 
+const sortUtil = {
+  shuffle: songs => {
+    return sortBy(songs, ["shuffleSeed"]);
+  }
+};
+
 class SongList {
   constructor({ songs = [], currentTrack = 1 } = {}) {
     this.songs = [];
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
-    this.defaultSorts = {
-      shuffle: songs => {
-        return sortBy(songs, ["shuffleSeed"]);
-      }
-    };
 
     songs.map(song => {
       this.add(song);
@@ -42,7 +43,7 @@ class SongList {
    */
   get({ sort = false, songs = this.songs } = {}) {
     if (isString(sort)) {
-      let sortFun = get(this.defaultSorts, sort);
+      let sortFun = get(sortUtil, sort); // lodash get; not recursion.
       if (sortFun) {
         return sortFun(songs);
       }

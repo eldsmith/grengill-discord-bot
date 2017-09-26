@@ -100,16 +100,6 @@ module.exports = grengilBot => {
           );
         }
         break;
-
-      case "!oldshuffle":
-        songListCommands({
-          songList: grengilBot.playlist,
-          commands: ["shuffle", "new", ...extra],
-          grengilBot,
-          message,
-          id: "playlist"
-        });
-        break;
     }
   };
 };
