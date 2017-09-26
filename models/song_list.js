@@ -9,7 +9,7 @@ const sortUtil = {
 
 class SongList {
   constructor({ songs = [], currentTrack = 1 } = {}) {
-    this.songs = [];
+    this._songs = [];
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
 
@@ -32,16 +32,16 @@ class SongList {
       baseSeed = this.songPlaying.shuffleSeed;
     }
     song.shuffleSeed = Math.random(baseSeed, 10);
-    this.songs.push(song);
+    this._songs.push(song);
   }
 
   /**
    * Gets the playlist
    * @param  {function || string} {sort=false
-   * @param  {Object[]} songs=this.songs}={}
+   * @param  {Object[]} songs=this._songs}={}
    * @returns {Object[]} songs
    */
-  get({ sort = false, songs = this.songs } = {}) {
+  get({ sort = false, songs = this._songs } = {}) {
     if (isString(sort)) {
       let sortFun = get(sortUtil, sort); // lodash get; not recursion.
       if (sortFun) {
@@ -55,7 +55,7 @@ class SongList {
 
   /**
    * Gets the next track from the playlist based on params passed in
-   * @param  {Object[]} {songs=this.songs
+   * @param  {Object[]} {songs=this._songs
    * @param  {Int} skip=1
    * @param  {Boolean} newCurrentTrack=true
    * @param  {function} sort=false
@@ -63,7 +63,7 @@ class SongList {
    * @returns {Object} track
    */
   getNextTrack(
-    { songs = this.songs, skip = 1, newCurrentTrack = true, sort = false } = {}
+    { songs = this._songs, skip = 1, newCurrentTrack = true, sort = false } = {}
   ) {
     if (songs.length === 0) {
       throw { error: err.PLAYLIST_EMPTY };
@@ -101,11 +101,11 @@ class SongList {
 
   /**
    * returns a new shuffled list of songs
-   * @param  {Object} songs=this.songs
+   * @param  {Object} songs=this._songs
    * @returns {SongList[]}
    */
-  mix({ songs = this.songs } = {}) {
-    let mixedList = [...songs];
+  mix({ songs = this._songs } = {}) {
+    let mixedList = [..._songs];
     for (let i = mixedList.length; i >= 1; i--) {
       let rand = Math.floor(Math.random() * i);
       [mixedList[i - 1], mixedList[rand]] = [mixedList[rand], mixedList[i - 1]];
@@ -119,15 +119,15 @@ class SongList {
    * returns a static shuffled version of the list, does not reshuffle the list like mix
    * @returns {SongList[]}
    */
-  shuffle({ songs = this.songs } = {}) {
+  shuffle({ songs = this._songs } = {}) {
     return this.get({ sort: "shuffle", songs });
   }
 
   /**
    * returns a distinct version of the playlist
-   * @param  {Object} songs=this.songs
+   * @param  {Object} songs=this._songs
    */
-  distinct({ songs = this.songs } = {}) {
+  distinct({ songs = this._songs } = {}) {
     let found = [],
       ret = [];
     for (let i = 0; i < songs.length; i++) {
