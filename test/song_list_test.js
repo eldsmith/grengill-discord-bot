@@ -88,20 +88,32 @@ describe("SongList test", function() {
   });
 
   describe("Getting & sorting", function() {
+    let alphaSort, getFirst;
+
     before(function() {
+      alphaSort = list => {
+        return list.sort((a, b) => {
+          return a.name > b.name;
+        });
+      };
+
+      getFirst = list => {
+        return list[0];
+      };
+
+      getFirstTwo = list => {
+        return list.slice(0, 2);
+      };
+    });
+
+    beforeEach(function() {
       testList = new SongList({
         songs: [{ name: "adam" }, { name: "zebra" }, { name: "bard" }]
       });
     });
 
     it("sorts by alphabetical", function() {
-      let sort = list => {
-        return list.sort((a, b) => {
-          return a.name > b.name;
-        });
-      };
-
-      let songList = testList.get({ sort });
+      let songList = testList.get({ sort: alphaSort });
       let prevSong;
       let worked = true;
 
@@ -113,6 +125,16 @@ describe("SongList test", function() {
       });
 
       assert(worked);
+    });
+
+    it("sorts by alphabetical and then gets first", function() {
+      let songList = testList.get({ sort: [alphaSort, getFirst] });
+      assert(songList.name === "adam");
+    });
+
+    it("gets first two then sorts by alphabetical", function() {
+      let songList = testList.get({ sort: [getFirstTwo, alphaSort] });
+      assert(songList[0].name === "adam" && songList[1].name === "zebra");
     });
   });
 });

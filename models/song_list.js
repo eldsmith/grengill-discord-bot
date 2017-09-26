@@ -40,8 +40,24 @@ class SongList {
    * @returns {Object[]} songs
    */
   get({ sort = false, songs = this._songs } = {}) {
-    if (isString(sort)) {
-      let sortFun = get(this._sortFunctions, sort); // lodash get; not recursion.
+    if (isArray(sort)) {
+      let returnSongs;
+
+      // songs mutates on each iteration of get
+      sort.map(s => {
+        console.log(s);
+        songs = this.get({ sort: s, songs });
+      });
+      return songs;
+    } else if (isString(sort)) {
+      let splitSort = sort.split("|");
+
+      // There are many commands, so use recursion to go through them all
+      if (splitSort.length > 1) {
+        return this.get({ sort: splitSort, songs });
+      }
+
+      let sortFun = get(this._sortFunctions, splitSort[0].trim()); // lodash get; not recursion.
       if (sortFun) {
         return sortFun(songs);
       }
