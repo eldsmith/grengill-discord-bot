@@ -1,21 +1,19 @@
-const { sortBy, isString, isFunction, get } = require("lodash");
+const { sortBy, isString, isArray, isFunction, get } = require("lodash");
 const err = require("../lib/errors");
-
-const sortUtil = {
-  shuffle: songs => {
-    return sortBy(songs, ["shuffleSeed"]);
-  }
-};
+const sortUtil = require("../util/sortUtil");
 
 class SongList {
   constructor({ songs = [], currentTrack = 1 } = {}) {
     this._songs = [];
+    this._sortFunctions = {};
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
 
     songs.map(song => {
       this.add(song);
     });
+
+    this._addSort("shuffle");
   }
 
   /**
@@ -43,7 +41,7 @@ class SongList {
    */
   get({ sort = false, songs = this._songs } = {}) {
     if (isString(sort)) {
-      let sortFun = get(sortUtil, sort); // lodash get; not recursion.
+      let sortFun = get(this._sortFunctions, sort); // lodash get; not recursion.
       if (sortFun) {
         return sortFun(songs);
       }
@@ -124,6 +122,7 @@ class SongList {
   }
 
   /**
+   * FIXME: No longer works or is undesirable, refactor into sort function,
    * returns a distinct version of the playlist
    * @param  {Object} songs=this._songs
    */
@@ -138,6 +137,28 @@ class SongList {
     }
 
     return ret;
+  }
+
+  _addSort(sort) {
+    if (isArray(sort)) {
+      sort.map(s => {
+        this._addSort(sort);
+      });
+    } else if (isString(sort)) {
+      this._sortFunctions[sort] = sortUtil[sort];
+    } else if (isFunction(sort.sort) && sort.name) {
+      this._sortFunctions[sort.name] = sort.sort;
+    }
+  }
+
+  _removeSort(sort) {
+    if (isArray(sort)) {
+      sort.map(s => {
+        this._removeSort(sort);
+      });
+    } else if (isString(sort)) {
+      delete this._sortFunctions[sort];
+    }
   }
 }
 
