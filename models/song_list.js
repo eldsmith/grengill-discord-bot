@@ -1,16 +1,17 @@
 const { sortBy, isString, isArray, isFunction, get } = require("lodash");
 const err = require("../lib/errors");
 const sortUtil = require("../util/sortUtil");
+const Song = require("./song");
 
 class SongList {
-  constructor({ songs = [], currentTrack = 1 } = {}) {
+  constructor({ songs = [], currentTrack = 1, Model = Song } = {}) {
     this._songs = [];
     this._sortFunctions = {};
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
 
     songs.map(song => {
-      this.add(song);
+      this.add(song, Model);
     });
 
     this._addSort("shuffle");
@@ -20,7 +21,7 @@ class SongList {
    * Adds a song to the playlist, with a random seed
    * @param  {Object} song
    */
-  add(song) {
+  add(song, Model = Song) {
     let baseSeed = 0;
 
     /* FIXME: does not work currently
@@ -29,8 +30,8 @@ class SongList {
     if (this.songPlaying && this.shuffleMode) {
       baseSeed = this.songPlaying.shuffleSeed;
     }
-    song.shuffleSeed = Math.random(baseSeed, 10);
-    this._songs.push(song);
+
+    this._songs.push(new Model({ song, baseSeed }));
   }
 
   /**
@@ -41,11 +42,8 @@ class SongList {
    */
   get({ sort = false, songs = this._songs } = {}) {
     if (isArray(sort)) {
-      let returnSongs;
-
       // songs mutates on each iteration of get
       sort.map(s => {
-        console.log(s);
         songs = this.get({ sort: s, songs });
       });
       return songs;

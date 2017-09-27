@@ -33,7 +33,7 @@ module.exports = grengilBot => {
 
       case "!add":
         Youtube.search(extra).then(result => {
-          grengilBot.add(result);
+          grengilBot.add({ song: result, provider: "youtube" });
           message.channel.sendMessage("Added: " + result.title);
         });
         break;
