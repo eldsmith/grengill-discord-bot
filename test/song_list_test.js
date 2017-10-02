@@ -13,7 +13,6 @@ describe("SongList test", function() {
 
     it("goes from 1 to 2", () => {
       let { song } = testList.getNextTrack({ skip: 1 });
-      console.log(song);
       assert(song.data.name === "2");
     });
     it("goes from 2 to 3", () => {

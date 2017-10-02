@@ -1,5 +1,6 @@
 const SongList = require("./song_list");
-const db = require("../lib/db/db");
+const LokiDatabase = require("../lib/db/db");
+const db = new LokiDatabase();
 
 //TODO: fetch every time grengilbot songs are updated
 class HistorySongList extends SongList {
@@ -11,7 +12,7 @@ class HistorySongList extends SongList {
 
   //fetch songs from history
   fetch() {
-    db.getCollection("history", data => {
+    db.getCollection("history").then(data => {
       this._songs = data
         .chain()
         .find()

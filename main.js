@@ -1,6 +1,6 @@
 "use strict";
 require("dotenv").config();
-require("./lib/db/db").init(); //Initialize the database
+// require("./lib/db/db").init(); //Initialize the database
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
