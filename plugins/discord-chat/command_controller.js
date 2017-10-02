@@ -61,7 +61,7 @@ module.exports = grengilBot => {
       case "!playlist":
         songListCommands({
           songList: grengilBot.playlist,
-          commands: ["log", ...extra],
+          commands: extra,
           grengilBot,
           message,
           id: "playlist"

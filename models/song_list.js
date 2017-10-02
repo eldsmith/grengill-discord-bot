@@ -4,11 +4,14 @@ const sortUtil = require("../util/sortUtil");
 const Song = require("./song");
 
 class SongList {
-  constructor({ songs = [], currentTrack = 1, Model = Song } = {}) {
+  constructor(
+    { songs = [], currentTrack = 1, Model = Song, repeatMode = false } = {}
+  ) {
     this._songs = [];
     this._sortFunctions = {};
     this.songPlaying = { song: {}, playing: false, dispatcher: undefined }; // The current song playing
     this.currentTrack = currentTrack;
+    this.repeatMode = false;
 
     songs.map(song => {
       this.add(song, Model);
@@ -21,17 +24,18 @@ class SongList {
    * Adds a song to the playlist, with a random seed
    * @param  {Object} song
    */
-  add(song, Model = Song) {
-    let baseSeed = 0;
-
+  add(song) {
     /* FIXME: does not work currently
     by using currently playing song we ensure
-		this song is after it in shufflemode*/
+		this song is after it in shufflemode
     if (this.songPlaying && this.shuffleMode) {
       baseSeed = this.songPlaying.shuffleSeed;
+    }*/
+    if (!(song instanceof Song)) {
+      song = new Song({ song });
     }
 
-    this._songs.push(new Model({ song, baseSeed }));
+    this._songs.push(song);
   }
 
   /**
@@ -106,8 +110,7 @@ class SongList {
    * Ends the song currently playing.
    * @param  {Boolean} next=false
    */
-  endCurrentSong(next = false) {
-    this.songPlaying.autoNext = next; //Determines wether the song automatically goes to the next song on end
+  endCurrentSong() {
     this.songPlaying.dispatcher.end();
   }
 
@@ -141,11 +144,14 @@ class SongList {
    * @param  {Object} songs=this._songs
    */
   distinct({ songs = this._songs } = {}) {
+    console.log("hello");
     let found = [],
       ret = [];
     for (let i = 0; i < songs.length; i++) {
-      if (found.indexOf(songs[i].id) === -1) {
-        found.push(songs[i].id);
+      let id = songs[i].getId();
+      if (found.indexOf(id) === -1) {
+        console.log(id);
+        found.push(id);
         ret.push(songs[i]);
       }
     }

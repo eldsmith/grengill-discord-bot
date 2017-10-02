@@ -14,6 +14,7 @@ module.exports = grengilBotIn => {
   //FIXME: History collection should have ttl or some sort of limit
   grengilBot.on("add", song => {
     song.dateAdded = Date();
+    console.log(song.getTitle());
     db.addToCollection("history", song);
   });
 

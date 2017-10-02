@@ -13,27 +13,28 @@ describe("SongList test", function() {
 
     it("goes from 1 to 2", () => {
       let { song } = testList.getNextTrack({ skip: 1 });
-      assert(song.name === "2");
+      console.log(song);
+      assert(song.data.name === "2");
     });
     it("goes from 2 to 3", () => {
       let { song } = testList.getNextTrack({ skip: 1 });
-      assert(song.name === "3");
+      assert(song.data.name === "3");
     });
     it("goes from 3 to 1", () => {
       let { song } = testList.getNextTrack({ skip: -2 });
-      assert(song.name === "1");
+      assert(song.data.name === "1");
     });
     it("goes from 1 to 4", () => {
       let { song } = testList.getNextTrack({ skip: 3 });
-      assert(song.name === "4");
+      assert(song.data.name === "4");
     });
     it("tries to go less than 1 but still stay in 1", () => {
       let { song } = testList.getNextTrack({ skip: -10 });
-      assert(song.name === "1");
+      assert(song.data.name === "1");
     });
     it("loops to the beginning of the playlist and to 3", () => {
       let { song } = testList.getNextTrack({ skip: 6 });
-      assert(song.name === "3");
+      assert(song.data.name === "3");
     });
     it("loops and indicates that a loop occurred", () => {
       let track = testList.getNextTrack({ skip: 6 });
@@ -69,6 +70,10 @@ describe("SongList test", function() {
       let unshuffled = testList.get();
       assert(shuffleTest(unshuffled) === false);
     });
+    it("still has the same length as an unshuffled playlist", function() {
+      let shuffled = testList.shuffle();
+      assert(shuffled.length === 4);
+    });
   });
 
   describe("Adding", function() {
@@ -83,7 +88,7 @@ describe("SongList test", function() {
 
     it("adds another song to the end", function() {
       testList.add({ name: "2" });
-      assert(testList.get()[1].name === "2");
+      assert(testList.get()[1].data.name === "2");
     });
   });
 
@@ -93,7 +98,7 @@ describe("SongList test", function() {
     before(function() {
       alphaSort = list => {
         return list.sort((a, b) => {
-          return a.name > b.name;
+          return a.data.name > b.data.name;
         });
       };
 
@@ -129,12 +134,14 @@ describe("SongList test", function() {
 
     it("sorts by alphabetical and then gets first", function() {
       let songList = testList.get({ sort: [alphaSort, getFirst] });
-      assert(songList.name === "adam");
+      assert(songList.data.name === "adam");
     });
 
     it("gets first two then sorts by alphabetical", function() {
       let songList = testList.get({ sort: [getFirstTwo, alphaSort] });
-      assert(songList[0].name === "adam" && songList[1].name === "zebra");
+      assert(
+        songList[0].data.name === "adam" && songList[1].data.name === "zebra"
+      );
     });
   });
 });

@@ -26,7 +26,7 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
         break;
       case "unique":
       case "u":
-        songs = songList.distinct(songs);
+        flags.unique = true;
         break;
       case "log":
       case "l":
@@ -43,6 +43,9 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
     }
   });
 
+  if (flags.unique) {
+    songs = songList.distinct({ songs });
+  }
   if (flags.shuffle) {
     songs = songList.shuffle({ songs });
   }
@@ -53,6 +56,7 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
     grengilBot.clearPlaylist();
     grengilBot.add(songs);
   }
+
   if (flags.log) {
     logger(songs, id)
       .then(data => {
