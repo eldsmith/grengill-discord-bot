@@ -1,6 +1,6 @@
 /node_modules
 .env
-/lib/db/db.json
+/lib/db/*.json
 /plugins/*/config.json
 
 npm-debug\.log

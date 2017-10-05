@@ -1,7 +1,6 @@
 "use strict";
 const assert = require("assert");
 require("dotenv").config();
-// require("../lib/db/db").init(); //Initialize the database
 const express = require("express");
 
 /*
