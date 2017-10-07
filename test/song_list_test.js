@@ -11,48 +11,91 @@ describe("SongList test", function() {
       testList = new SongList({ songs });
     });
 
-    it("goes from 1 to 2", () => {
-      let { song } = testList.getNextTrack({ skip: 1 });
-      assert(song.data.name === "2");
+    it("goes from 1 to 2", done => {
+      testList
+        .getNextTrack({ skip: 1 })
+        .then(({ song }) => {
+          return assert(song.data.name === "2");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("goes from 2 to 3", () => {
-      let { song } = testList.getNextTrack({ skip: 1 });
-      assert(song.data.name === "3");
+    it("goes from 2 to 3", done => {
+      testList
+        .getNextTrack({ skip: 1 })
+        .then(({ song }) => {
+          return assert(song.data.name === "3");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("goes from 3 to 1", () => {
-      let { song } = testList.getNextTrack({ skip: -2 });
-      assert(song.data.name === "1");
+    it("goes from 3 to 1", done => {
+      testList
+        .getNextTrack({ skip: -2 })
+        .then(({ song }) => {
+          return assert(song.data.name === "1");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("goes from 1 to 4", () => {
-      let { song } = testList.getNextTrack({ skip: 3 });
-      assert(song.data.name === "4");
+    it("goes from 1 to 4", done => {
+      testList
+        .getNextTrack({ skip: 3 })
+        .then(({ song }) => {
+          return assert(song.data.name === "4");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("tries to go less than 1 but still stay in 1", () => {
-      let { song } = testList.getNextTrack({ skip: -10 });
-      assert(song.data.name === "1");
+    it("tries to go less than 1 but still stay in 1", done => {
+      testList
+        .getNextTrack({ skip: -10 })
+        .then(({ song }) => {
+          return assert(song.data.name === "1");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("loops to the beginning of the playlist and to 3", () => {
-      let { song } = testList.getNextTrack({ skip: 6 });
-      assert(song.data.name === "3");
+    it("loops to the beginning of the playlist and to 3", done => {
+      testList
+        .getNextTrack({ skip: 6 })
+        .then(({ song }) => {
+          return assert(song.data.name === "3");
+        })
+        .then(done)
+        .catch(done);
     });
-    it("loops and indicates that a loop occurred", () => {
-      let track = testList.getNextTrack({ skip: 6 });
-      assert(track.looped === true);
+    it("loops and indicates that a loop occurred", done => {
+      testList
+        .getNextTrack({ skip: 6 })
+        .then(data => {
+          return assert(data.looped === true);
+        })
+        .then(done)
+        .catch(done);
     });
-    it("gets the next track in a shuffle", () => {
-      let track = testList.getNextTrack({ sort: "shuffle" }).song.name;
-      let randTrack = testList.shuffle()[testList.currentTrack - 1].name;
-
-      assert(track == randTrack);
+    it("gets the next track in a shuffle", done => {
+      let track, randTrack;
+      testList
+        .getNextTrack({ sort: "shuffle" })
+        .then(({ song }) => {
+          track = song;
+          return testList.shuffle();
+        })
+        .then(shuffled => {
+          randTrack = shuffled[testList.currentTrack - 1];
+          assert(track.data.name == randTrack.data.name);
+        })
+        .then(done)
+        .catch(done);
     });
-    it("returns an error when nexting an empty playlist", () => {
+    it("returns an error when nexting an empty playlist", done => {
       let emptyList = new SongList({ songs: [] });
 
-      try {
-        emptyList.getNextTrack();
-      } catch (e) {
+      emptyList.getNextTrack().catch(e => {
         assert((e.error = err.PLAYLIST_EMPTY));
-      }
+        done();
+      });
     });
   });
 
@@ -61,17 +104,32 @@ describe("SongList test", function() {
       testList = new SongList({ songs });
     });
 
-    it("returns a properly shuffled playlist", function() {
-      let shuffled = testList.shuffle();
-      assert(shuffleTest(shuffled) === true);
+    it("returns a properly shuffled playlist", function(done) {
+      testList
+        .shuffle()
+        .then(shuffled => {
+          assert(shuffleTest(shuffled) === true);
+        })
+        .then(done)
+        .catch(done);
     });
-    it("returns an unshuffled playlist", function() {
-      let unshuffled = testList.get();
-      assert(shuffleTest(unshuffled) === false);
+    it("returns an unshuffled playlist", function(done) {
+      testList
+        .get()
+        .then(songs => {
+          assert(shuffleTest(songs) === false);
+        })
+        .then(done)
+        .catch(done);
     });
-    it("still has the same length as an unshuffled playlist", function() {
-      let shuffled = testList.shuffle();
-      assert(shuffled.length === 4);
+    it("still has the same length as an unshuffled playlist", function(done) {
+      testList
+        .shuffle()
+        .then(shuffled => {
+          assert(shuffled.length === 4);
+        })
+        .then(done)
+        .catch(done);
     });
   });
 
@@ -80,14 +138,26 @@ describe("SongList test", function() {
       testList = new SongList();
     });
 
-    it("adds a song to an empty playlist", function() {
+    it("adds a song to an empty playlist", function(done) {
       testList.add({ name: "bartholomew" });
-      assert(testList.get().length === 1);
+      testList
+        .get()
+        .then(songs => {
+          assert(songs.length === 1);
+        })
+        .then(done)
+        .catch(done);
     });
 
-    it("adds another song to the end", function() {
+    it("adds another song to the end", function(done) {
       testList.add({ name: "2" });
-      assert(testList.get()[1].data.name === "2");
+      testList
+        .get()
+        .then(songs => {
+          assert(songs[1].data.name === "2");
+        })
+        .then(done)
+        .catch(done);
     });
   });
 
@@ -102,7 +172,7 @@ describe("SongList test", function() {
       };
 
       getFirst = list => {
-        return list[0];
+        return [list[0]];
       };
 
       getFirstTwo = list => {
@@ -116,31 +186,46 @@ describe("SongList test", function() {
       });
     });
 
-    it("sorts by alphabetical", function() {
-      let songList = testList.get({ sort: alphaSort });
-      let prevSong;
-      let worked = true;
+    it("sorts by alphabetical", function(done) {
+      testList
+        .get({ sort: alphaSort })
+        .then(songs => {
+          let prevSong;
+          let worked = true;
 
-      songList.map(song => {
-        if (prevSong && song.name < prevSong.name) {
-          worked = false;
-        }
-        prevSong = song;
-      });
+          songs.map(song => {
+            if (prevSong && song.name < prevSong.name) {
+              worked = false;
+            }
+            prevSong = song;
+          });
 
-      assert(worked);
+          assert(worked);
+        })
+        .then(done)
+        .catch(done);
     });
 
-    it("sorts by alphabetical and then gets first", function() {
-      let songList = testList.get({ sort: [alphaSort, getFirst] });
-      assert(songList.data.name === "adam");
+    it("sorts by alphabetical and then gets first", function(done) {
+      testList
+        .get({ sort: [alphaSort, getFirst] })
+        .then(songs => {
+          assert(songs[0].data.name === "adam");
+        })
+        .then(done)
+        .catch(done);
     });
 
-    it("gets first two then sorts by alphabetical", function() {
-      let songList = testList.get({ sort: [getFirstTwo, alphaSort] });
-      assert(
-        songList[0].data.name === "adam" && songList[1].data.name === "zebra"
-      );
+    it("gets first two then sorts by alphabetical", function(done) {
+      testList
+        .get({ sort: [getFirstTwo, alphaSort] })
+        .then(songs => {
+          assert(
+            songs[0].data.name === "adam" && songs[1].data.name === "zebra"
+          );
+        })
+        .then(done)
+        .catch(done);
     });
   });
 });

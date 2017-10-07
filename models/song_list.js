@@ -13,9 +13,7 @@ class SongList {
     this.currentTrack = currentTrack;
     this.repeatMode = false;
 
-    songs.map(song => {
-      this.add(song, Model);
-    });
+    songs.map(this.add.bind(this));
 
     this._addSort("shuffle");
   }
@@ -42,31 +40,10 @@ class SongList {
    * Gets the playlist
    * @param  {function || string} {sort=false
    * @param  {Object[]} songs=this._songs}={}
-   * @returns {Object[]} songs
+   * @returns {Promise} that resolves with a list of songs
    */
   get({ sort = false, songs = this._songs } = {}) {
-    if (isArray(sort)) {
-      // songs mutates on each iteration of get
-      sort.map(s => {
-        songs = this.get({ sort: s, songs });
-      });
-      return songs;
-    } else if (isString(sort)) {
-      let splitSort = sort.split("|");
-
-      // There are many commands, so use recursion to go through them all
-      if (splitSort.length > 1) {
-        return this.get({ sort: splitSort, songs });
-      }
-
-      let sortFun = get(this._sortFunctions, splitSort[0].trim()); // lodash get; not recursion.
-      if (sortFun) {
-        return sortFun(songs);
-      }
-    } else if (isFunction(sort)) {
-      return sort(songs);
-    }
-    return songs;
+    return Promise.resolve(this._runSort(sort, songs));
   }
 
   /**
@@ -82,7 +59,7 @@ class SongList {
     { songs = this._songs, skip = 1, newCurrentTrack = true, sort = false } = {}
   ) {
     if (songs.length === 0) {
-      throw { error: err.PLAYLIST_EMPTY };
+      return Promise.reject({ error: err.PLAYLIST_EMPTY });
     }
 
     let trackIndex = this.currentTrack + skip;
@@ -100,11 +77,11 @@ class SongList {
       track.looped = true;
     }
 
-    songs = this.get({ sort, songs });
-
-    this.currentTrack = newCurrentTrack ? trackIndex : this.currentTrack;
-    track.song = songs[trackIndex - 1];
-    return track;
+    return this.get({ sort, songs }).then(songsReturn => {
+      this.currentTrack = newCurrentTrack ? trackIndex : this.currentTrack;
+      track.song = songsReturn[trackIndex - 1];
+      return track;
+    });
   }
   /**
    * Ends the song currently playing.
@@ -144,13 +121,11 @@ class SongList {
    * @param  {Object} songs=this._songs
    */
   distinct({ songs = this._songs } = {}) {
-    console.log("hello");
     let found = [],
       ret = [];
     for (let i = 0; i < songs.length; i++) {
       let id = songs[i].getId();
       if (found.indexOf(id) === -1) {
-        console.log(id);
         found.push(id);
         ret.push(songs[i]);
       }
@@ -179,6 +154,31 @@ class SongList {
     } else if (isString(sort)) {
       delete this._sortFunctions[sort];
     }
+  }
+
+  _runSort(sort, songs) {
+    if (isArray(sort)) {
+      // songs mutates on each iteration of get
+      sort.map(s => {
+        songs = this._runSort(s, songs);
+      });
+      return songs;
+    } else if (isString(sort)) {
+      let splitSort = sort.split("|");
+
+      // There are many commands, so use recursion to go through them all
+      if (splitSort.length > 1) {
+        return this._runSort(splitSort, songs);
+      }
+
+      let sortFun = get(this._sortFunctions, splitSort[0].trim()); // lodash get; not recursion.
+      if (sortFun) {
+        return sortFun(songs);
+      }
+    } else if (isFunction(sort)) {
+      return sort(songs);
+    }
+    return songs;
   }
 }
 

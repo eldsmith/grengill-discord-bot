@@ -7,18 +7,25 @@ class HistorySongList extends SongList {
     super({ songs });
 
     this.db = new LokiDatabase({ dbName, defaultCollections: ["history"] });
-    this.fetch();
+    this.get(); // fetches from the db
   }
 
-  //fetch songs from history
-  fetch() {
-    this.db.getCollection("history").then(data => {
-      this._songs = data
-        .chain()
-        .find()
-        .simplesort("dateAdded", true)
-        .data();
-    });
+  /**
+   * @returns {Promise}
+   */
+  get() {
+    return this.db
+      .getCollection("history")
+      .then(data => {
+        return data
+          .chain()
+          .find()
+          .simplesort("dateAdded", true)
+          .data();
+      })
+      .then(songs => {
+        this._songs = songs; //Shouldn't be necessary but someone starts doing stupid stuff.
+      });
   }
 }
 
