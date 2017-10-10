@@ -80,7 +80,7 @@ describe("SongList test", function() {
         .getNextTrack({ sort: "shuffle" })
         .then(({ song }) => {
           track = song;
-          return testList.shuffle();
+          return testList.get({ sort: "shuffle" });
         })
         .then(shuffled => {
           randTrack = shuffled[testList.currentTrack - 1];
@@ -106,7 +106,7 @@ describe("SongList test", function() {
 
     it("returns a properly shuffled playlist", function(done) {
       testList
-        .shuffle()
+        .get({ sort: "shuffle" })
         .then(shuffled => {
           assert(shuffleTest(shuffled) === true);
         })
@@ -124,7 +124,7 @@ describe("SongList test", function() {
     });
     it("still has the same length as an unshuffled playlist", function(done) {
       testList
-        .shuffle()
+        .get({ sort: "shuffle" })
         .then(shuffled => {
           assert(shuffled.length === 4);
         })

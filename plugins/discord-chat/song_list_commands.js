@@ -14,9 +14,8 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
   }
 
   if (!commandsList) return;
-
-  let songs = [...songList.get()];
   let flags = {};
+  let sort = [];
 
   commandsList.map(command => {
     switch (command) {
@@ -44,29 +43,34 @@ module.exports = ({ songList, commands, grengilBot, message, id }) => {
   });
 
   if (flags.unique) {
-    songs = songList.distinct({ songs });
+    sort.push("distinct");
   }
   if (flags.shuffle) {
-    songs = songList.shuffle({ songs });
-  }
-  if (flags.add) {
-    grengilBot.add(songs);
-  }
-  if (flags.new) {
-    grengilBot.clearPlaylist();
-    grengilBot.add(songs);
+    sort.push("shuffle");
   }
 
-  if (flags.log) {
-    logger(songs, id)
-      .then(data => {
-        message.channel.sendMessage("Somebody asked me for this shit: " + data);
-      })
-      .fail(err => {
-        console.log(err);
-        message.channel.sendMessage(
-          "Oh shit, I messed up, go away I ain't got time for this shit"
-        );
-      });
-  }
+  songList.get({ sort }).then(songs => {
+    if (flags.add) {
+      grengilBot.add(songs);
+    }
+    if (flags.new) {
+      grengilBot.clearPlaylist();
+      grengilBot.add(songs);
+    }
+
+    if (flags.log) {
+      logger(songs, id)
+        .then(data => {
+          message.channel.sendMessage(
+            "Somebody asked me for this shit: " + data
+          );
+        })
+        .fail(err => {
+          console.log(err);
+          message.channel.sendMessage(
+            "Oh shit, I messed up, go away I ain't got time for this shit"
+          );
+        });
+    }
+  });
 };

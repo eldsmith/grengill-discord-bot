@@ -15,7 +15,7 @@ class SongList {
 
     songs.map(this.add.bind(this));
 
-    this._addSort("shuffle");
+    this._addSort(["shuffle", "distinct"]);
   }
 
   /**
@@ -106,38 +106,10 @@ class SongList {
     return mixedList;
   }
 
-  /**
-   * FIXME: Legacy code
-   * returns a static shuffled version of the list, does not reshuffle the list like mix
-   * @returns {SongList[]}
-   */
-  shuffle({ songs = this._songs } = {}) {
-    return this.get({ sort: "shuffle", songs });
-  }
-
-  /**
-   * FIXME: No longer works or is undesirable, refactor into sort function,
-   * returns a distinct version of the playlist
-   * @param  {Object} songs=this._songs
-   */
-  distinct({ songs = this._songs } = {}) {
-    let found = [],
-      ret = [];
-    for (let i = 0; i < songs.length; i++) {
-      let id = songs[i].getId();
-      if (found.indexOf(id) === -1) {
-        found.push(id);
-        ret.push(songs[i]);
-      }
-    }
-
-    return ret;
-  }
-
   _addSort(sort) {
     if (isArray(sort)) {
       sort.map(s => {
-        this._addSort(sort);
+        this._addSort(s);
       });
     } else if (isString(sort)) {
       this._sortFunctions[sort] = sortUtil[sort];
