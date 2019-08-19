@@ -1,8 +1,8 @@
 "use strict";
 const songListCommands = require("./song_list_commands");
 const Youtube = require(process.cwd() + "/controllers/youtube_controller");
-const HistorySongList = require(process.cwd() + "/models/history_song_list");
-const historyList = new HistorySongList();
+// const HistorySongList = require(process.cwd() + "/models/history_song_list");
+// const historyList = new HistorySongList();
 
 //FIXME: no proper returns, bad for testing
 module.exports = grengilBot => {
@@ -16,10 +16,19 @@ module.exports = grengilBot => {
       //Joins the voice channel of the person asking
       case "!join":
         if (message.member.voiceChannel) {
-          grengilBot.join(message.member.voiceChannel);
-          message.channel.sendMessage(
-            "Joining voice channel: " + message.member.voiceChannel.name
-          );
+          grengilBot.join(message.member.voiceChannel)
+            .then(() => {
+              message.channel.sendMessage(
+                "Joining voice channel: " + message.member.voiceChannel.name
+              );
+            })
+            .catch(error => {
+              let errorMessage = "Whoops, something went wrong joining the channel. An admin should probably look into this..."
+              if (error.message === "FFMPEG not found"){
+                errorMessage = "Hmmm, can't join because it looks like I don't have FFMPEG installed on my server, whoopsie..."
+              }
+              message.channel.send(errorMessage);
+            });
         } else {
           message.channel.sendMessage(
             "Hey, you need to first join a voice channel before you ask me to join...idiot."
@@ -28,6 +37,7 @@ module.exports = grengilBot => {
         break;
 
       case "!play":
+        console.log('playyy');
         grengilBot.startPlayback();
         break;
 

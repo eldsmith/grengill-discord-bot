@@ -13,7 +13,7 @@ const testSongs = [
 
 const addMany = songs => {
   songs.map(song => {
-    textChannel.sendMessage("!add " + song);
+    textChannel.send("!add " + song);
   });
 };
 
@@ -22,6 +22,10 @@ module.exports = grengilBot => {
   userBot.login(process.env.TEST_USERBOT);
 
   userBot.on("ready", () => {
+    userBot.on('message', message =>{
+      console.log(message.content);
+    })
+
     userBot.channels.map(channel => {
       if (channel.type === "text" && channel.name === "general") {
         textChannel = channel;

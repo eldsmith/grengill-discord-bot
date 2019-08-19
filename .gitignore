@@ -4,3 +4,5 @@
 /plugins/*/config.json
 
 npm-debug\.log
+
+plugins/grengill-web/node_modules/

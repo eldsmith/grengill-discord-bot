@@ -7,9 +7,10 @@ class YouTubeSong extends Song {
   }
 
   getStream() {
-    return ytdl("https://www.youtube.com/watch?v=" + this.data.id, {
+    let yStream = ytdl("https://www.youtube.com/watch?v=" + this.data.id, {
       filter: "audioonly"
     });
+    return yStream;
   }
 
   getTitle() {
