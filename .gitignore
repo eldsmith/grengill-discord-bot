@@ -6,3 +6,5 @@
 npm-debug\.log
 
 plugins/grengill-web/node_modules/
+
+plugins/grengill-web/.cache/

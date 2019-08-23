@@ -3,8 +3,9 @@ const moment = require("moment");
 require("moment-duration-format");
 
 exports.search = (req, res) => {
+
   let params = {
-    q: req.query.search,
+    q: req.query.q,
     type: "video",
     maxResults: 10,
     part: "snippet"
@@ -16,7 +17,7 @@ exports.search = (req, res) => {
 
   let searchResults;
   youtubeModel
-    .getSearch(params)
+  .getSearch(params)
     .then(results => {
       searchResults = results;
       //Find all the videoIds in the search results
@@ -40,9 +41,8 @@ exports.search = (req, res) => {
 
         return item;
       });
-
+      
       searchResults.prevSearch = req.query.search;
-      //Render the view with the final results
-      res.render("index", searchResults);
+      res.send(searchResults);
     });
 };
